@@ -21,6 +21,7 @@
             tools:context="com.example.administrator.courtcounter.MainActivity">
 
             <EditText
+                android:id="@+id/edit_team_a"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -104,6 +105,7 @@
             tools:context="com.example.administrator.courtcounter.MainActivity">
 
             <EditText
+                android:id="@+id/edit_team_b"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"

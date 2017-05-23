@@ -1,23 +1,72 @@
 package com.example.administrator.courtcounter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.administrator.courtcounter.R;
 
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+
 public class MainActivity extends AppCompatActivity {
     int scoreTeamA = 0;
     int scoreTeamB = 0;
+    public EditText editTeamA;
+    public EditText editTeamB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        editTeamA = (EditText) findViewById(R.id.edit_team_a);
+        editTeamB = (EditText) findViewById(R.id.edit_team_b);
+
+
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        String inputTextA = editTeamA.getText().toString();
+        String inputTextB = editTeamB.getText().toString();
+        save(inputTextA,inputTextB);
+
+    }
+
+    /*Try to save data of inputTextA and inputTextB*/
+
+    public void save(String inputTextA,String inputTextB) {
+        FileOutputStream out = null;
+        BufferedWriter writer = null;
+        try {
+            out = openFileOutput("data", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            writer.write(inputTextA);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+
+
 
     /**
      * Increase the score for Team A by 1 point.
