@@ -23,8 +23,8 @@ import java.io.OutputStreamWriter;
 public class MainActivity extends AppCompatActivity {
     int scoreTeamA = 0;
     int scoreTeamB = 0;
-    private EditText editTeamA;
-    private EditText editTeamB;
+    public EditText editTeamA;
+    public EditText editTeamB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,8 +176,21 @@ public class MainActivity extends AppCompatActivity {
         scoreTeamB = 0;
         displayForTeamA(scoreTeamA);
         displayForTeamB(scoreTeamB);
+        displayNullTextForTeam(editTeamA,editTeamB);
 
     }
+    /*When we reset the APP
+    we should get the null EditText and the null socre for team A and team B.
+
+     */
+    public void displayNullTextForTeam(EditText editTeamA ,EditText editTeamB){
+        editTeamA = (EditText) findViewById(R.id.edit_team_a);
+        editTeamB = (EditText) findViewById(R.id.edit_team_b);
+        editTeamA.setText(null);
+        editTeamB.setText(null);
+    }
+
+
 }
 
 
