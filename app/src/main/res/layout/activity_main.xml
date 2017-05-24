@@ -104,7 +104,8 @@
                 android:hint="Team B"
                 android:paddingTop="16dp"
                 android:textColor="#616161"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:maxLines="2"/>
 
             <TextView
                 android:id="@+id/team_b_score"

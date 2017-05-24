@@ -19,12 +19,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 public class MainActivity extends AppCompatActivity {
-    int scoreTeamA = 0;
-    int scoreTeamB = 0;
+    public int scoreTeamA = 0;
+    public int scoreTeamB = 0;
     public EditText editTeamA;
     public EditText editTeamB;
+    public TextView teamA;
+    public TextView teamB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         editTeamA = (EditText) findViewById(R.id.edit_team_a);
         editTeamB = (EditText) findViewById(R.id.edit_team_b);
-        String inputText = load();  //load() to read the data
+        teamA = (TextView)findViewById(R.id.team_a_score);
+        teamB = (TextView)findViewById(R.id.team_b_score);
+        String inputText = loadTeamName();  //load() to read the data
+
         if (!TextUtils.isEmpty(inputText)) {    //if the data is not null,then set the data to th EditText.
             editTeamA.setText(inputText);
             editTeamA.setSelection(inputText.length());  //Move the typing signal to the end of the EditText.
@@ -49,19 +55,47 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         String inputTextA = editTeamA.getText().toString();
         String inputTextB = editTeamB.getText().toString();
-        save(inputTextA, inputTextB);
+        String scoreSavedTeamA = teamA.getText().toString();
+        String scoreSavedTeamB = teamB.getText().toString();
+        saveTeamName(inputTextA, inputTextB);
+        saveTeamScore(scoreSavedTeamA,scoreSavedTeamB);
 
     }
 
     /*Try to save data of inputTextA and inputTextB*/
 
-    public void save(String inputTextA, String inputTextB) {
+    public void saveTeamName(String inputTextA, String inputTextB) {
         FileOutputStream out = null;
         BufferedWriter writer = null;
         try {
             out = openFileOutput("data", Context.MODE_PRIVATE);
             writer = new BufferedWriter(new OutputStreamWriter(out));
             writer.write(inputTextA);
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (writer != null) {
+                    writer.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+
+    public void saveTeamScore(String scoreSavedTeamA, String scoreSavedTeamB) {
+        FileOutputStream out = null;
+        BufferedWriter writer = null;
+        try {
+            out = openFileOutput("data2", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            writer.write(scoreSavedTeamA);
+            writer.write(scoreSavedTeamB);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -80,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     /*Try to load the data we saved
             That we can get them when we restart the App
              */
-    public String load() {
+    public String loadTeamName() {
         FileInputStream in = null;
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
@@ -105,6 +139,30 @@ public class MainActivity extends AppCompatActivity {
         return content.toString();
     }
 
+    public String loadTeamScore() {
+        FileInputStream in = null;
+        BufferedReader reader = null;
+        StringBuilder content = new StringBuilder();
+        try {
+            in = openFileInput("data2");
+            reader = new BufferedReader(new InputStreamReader(in));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return content.toString();
+    }
 
     /**
      * Increase the score for Team A by 1 point.
