@@ -11,7 +11,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.administrator.courtcounter.R;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -35,18 +37,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         editTeamA = (EditText) findViewById(R.id.edit_team_a);
         editTeamB = (EditText) findViewById(R.id.edit_team_b);
-        teamA = (TextView)findViewById(R.id.team_a_score);
-        teamB = (TextView)findViewById(R.id.team_b_score);
-        String inputText = loadTeamName();  //load() to read the data
-
-        if (!TextUtils.isEmpty(inputText)) {    //if the data is not null,then set the data to th EditText.
-            editTeamA.setText(inputText);
-            editTeamA.setSelection(inputText.length());  //Move the typing signal to the end of the EditText.
-            editTeamB.setText(inputText);
-            editTeamB.setSelection(inputText.length());
-
-            Toast.makeText(this, "Restoring succeeded", Toast.LENGTH_SHORT).show();  //Make a toast to remind the user.
+        teamA = (TextView) findViewById(R.id.team_a_score);
+        teamB = (TextView) findViewById(R.id.team_b_score);
+        String inputTextA = loadTeamAName();  //load() method is to read the data of team A's name.
+        if (!TextUtils.isEmpty(inputTextA)) {    //if the data is not null,then set the data to th EditText.
+            editTeamA.setText(inputTextA);
+            editTeamA.setSelection(inputTextA.length());  //Move the typing signal to the end of the EditText.
+            Toast.makeText(this, "Restoring Name of Team A succeeded", Toast.LENGTH_SHORT).show();  //Make a toast to remind the user.
         }
+
+        String inputTextB = loadTeamBName();  //load() method is to read the data of team B'S name.
+        if (!TextUtils.isEmpty(inputTextB)) {
+            editTeamB.setText(inputTextB);
+            editTeamB.setSelection(inputTextB.length());
+            Toast.makeText(this, "Restoring Name of Team B succeeded", Toast.LENGTH_SHORT).show();  //Make a toast to remind the user.
+        }
+
+
+        // Try to load the score data of team a and team b.
+
     }
 
 
@@ -57,28 +66,31 @@ public class MainActivity extends AppCompatActivity {
         String inputTextB = editTeamB.getText().toString();
         String scoreSavedTeamA = teamA.getText().toString();
         String scoreSavedTeamB = teamB.getText().toString();
-        saveTeamName(inputTextA, inputTextB);
-        saveTeamScore(scoreSavedTeamA,scoreSavedTeamB);
+
 
     }
 
     /*Try to save data of inputTextA and inputTextB*/
 
     public void saveTeamName(String inputTextA, String inputTextB) {
-        FileOutputStream out = null;
-        BufferedWriter writer = null;
+        FileOutputStream outAName = null;
+        BufferedWriter writerAName = null;
+        FileOutputStream outBName = null;
+        BufferedWriter writerBName = null;
         try {
-            out = openFileOutput("data", Context.MODE_PRIVATE);
-            writer = new BufferedWriter(new OutputStreamWriter(out));
-            writer.write(inputTextA);
-
-
+            outAName = openFileOutput("dataOfAName", Context.MODE_PRIVATE);
+            writerAName = new BufferedWriter(new OutputStreamWriter(outAName));
+            writerAName.write(inputTextA);
+            outBName = openFileOutput("dataOfBName", Context.MODE_PRIVATE);
+            writerBName = new BufferedWriter(new OutputStreamWriter(outBName));
+            writerBName.write(inputTextB);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (writer != null) {
-                    writer.close();
+                if (writerAName != null && writerBName != null) {
+                    writerAName.close();
+                    writerBName.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -89,20 +101,27 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void saveTeamScore(String scoreSavedTeamA, String scoreSavedTeamB) {
-        FileOutputStream out = null;
-        BufferedWriter writer = null;
+        FileOutputStream outAScore = null;
+        BufferedWriter writerAScore = null;
+        FileOutputStream outBScore = null;
+        BufferedWriter writerBScore = null;
+
         try {
-            out = openFileOutput("data2", Context.MODE_PRIVATE);
-            writer = new BufferedWriter(new OutputStreamWriter(out));
-            writer.write(scoreSavedTeamA);
-            writer.write(scoreSavedTeamB);
+            outAScore = openFileOutput("dataOfAScore", Context.MODE_PRIVATE);
+            writerAScore = new BufferedWriter(new OutputStreamWriter(outAScore));
+            writerAScore.write(scoreSavedTeamA);
+            outBScore = openFileOutput("dataOfBScore", Context.MODE_PRIVATE);
+            writerBScore = new BufferedWriter(new OutputStreamWriter(outBScore));
+            writerBScore.write(scoreSavedTeamB);
 
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (writer != null) {
-                    writer.close();
+                if (writerAScore != null && writerBScore != null) {
+                    writerAScore.close();
+                    writerBScore.close();
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -114,32 +133,62 @@ public class MainActivity extends AppCompatActivity {
     /*Try to load the data we saved
             That we can get them when we restart the App
              */
-    public String loadTeamName() {
-        FileInputStream in = null;
-        BufferedReader reader = null;
-        StringBuilder content = new StringBuilder();
+    public String loadTeamAName() {
+        FileInputStream inAName = null;
+        BufferedReader readerAName = null;
+        StringBuilder contentAName = new StringBuilder();
+
         try {
-            in = openFileInput("data");
-            reader = new BufferedReader(new InputStreamReader(in));
+            inAName = openFileInput("dataOfAName");
+            readerAName = new BufferedReader(new InputStreamReader(inAName));
             String line = "";
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
+            while ((line = readerAName.readLine()) != null) {
+                contentAName.append(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (reader != null) {
+            if (readerAName != null) {
                 try {
-                    reader.close();
+                    readerAName.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+
         }
-        return content.toString();
+        return contentAName.toString();
     }
 
-    public String loadTeamScore() {
+    //*Try to load the name of team b.
+
+    public String loadTeamBName() {
+        FileInputStream inBName = null;
+        BufferedReader readerBName = null;
+        StringBuilder contentBName = new StringBuilder();
+        try {
+            inBName = openFileInput("dataOfBName");
+            readerBName = new BufferedReader(new InputStreamReader(inBName));
+            String line = "";
+            while ((line = readerBName.readLine()) != null) {
+                contentBName.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (readerBName != null) {
+                try {
+                    readerBName.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return contentBName.toString();
+    }
+
+    public String loadTeamBScore() {
         FileInputStream in = null;
         BufferedReader reader = null;
         StringBuilder content = new StringBuilder();
@@ -193,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         TextView scoreView = (TextView) findViewById(R.id.team_a_score);
         scoreView.setText(String.valueOf(score));
     }
+
     /**
      * In the real game,a foul happened,you will get a chance to free throw.
      * Increase the score for Team B by 1 points.
@@ -226,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
         TextView scoreView = (TextView) findViewById(R.id.team_b_score);
         scoreView.setText(String.valueOf(score));
     }
+
     /* Try to reset score.
     And make them to be zero at the same time.
      */
@@ -234,14 +285,15 @@ public class MainActivity extends AppCompatActivity {
         scoreTeamB = 0;
         displayForTeamA(scoreTeamA);
         displayForTeamB(scoreTeamB);
-        displayNullTextForTeam(editTeamA,editTeamB);
+        displayNullTextForTeam(editTeamA, editTeamB);
 
     }
+
     /*When we reset the APP
     we should get the null EditText and the null socre for team A and team B.
 
      */
-    public void displayNullTextForTeam(EditText editTeamA ,EditText editTeamB){
+    public void displayNullTextForTeam(EditText editTeamA, EditText editTeamB) {
         editTeamA = (EditText) findViewById(R.id.edit_team_a);
         editTeamB = (EditText) findViewById(R.id.edit_team_b);
         editTeamA.setText(null);
