@@ -11,9 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.administrator.courtcounter.R;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
@@ -100,35 +98,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void saveTeamScore(String scoreSavedTeamA, String scoreSavedTeamB) {
-        FileOutputStream outAScore = null;
-        BufferedWriter writerAScore = null;
-        FileOutputStream outBScore = null;
-        BufferedWriter writerBScore = null;
-
-        try {
-            outAScore = openFileOutput("dataOfAScore", Context.MODE_PRIVATE);
-            writerAScore = new BufferedWriter(new OutputStreamWriter(outAScore));
-            writerAScore.write(scoreSavedTeamA);
-            outBScore = openFileOutput("dataOfBScore", Context.MODE_PRIVATE);
-            writerBScore = new BufferedWriter(new OutputStreamWriter(outBScore));
-            writerBScore.write(scoreSavedTeamB);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (writerAScore != null && writerBScore != null) {
-                    writerAScore.close();
-                    writerBScore.close();
-
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
 
     /*Try to load the data we saved
             That we can get them when we restart the App
@@ -187,31 +156,39 @@ public class MainActivity extends AppCompatActivity {
         }
         return contentBName.toString();
     }
+/*Try to save the score of two teams.
+It is TextView
+ */
+    public void saveTeamScore(String scoreSavedTeamA, String scoreSavedTeamB) {
+        FileOutputStream outAScore = null;
+        BufferedWriter writerAScore = null;
+        FileOutputStream outBScore = null;
+        BufferedWriter writerBScore = null;
 
-    public String loadTeamBScore() {
-        FileInputStream in = null;
-        BufferedReader reader = null;
-        StringBuilder content = new StringBuilder();
         try {
-            in = openFileInput("data2");
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                content.append(line);
-            }
+            outAScore = openFileOutput("dataOfAScore", Context.MODE_PRIVATE);
+            writerAScore = new BufferedWriter(new OutputStreamWriter(outAScore));
+            writerAScore.write(scoreSavedTeamA);
+            outBScore = openFileOutput("dataOfBScore", Context.MODE_PRIVATE);
+            writerBScore = new BufferedWriter(new OutputStreamWriter(outBScore));
+            writerBScore.write(scoreSavedTeamB);
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                if (writerAScore != null && writerBScore != null) {
+                    writerAScore.close();
+                    writerBScore.close();
+
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-        return content.toString();
+
     }
+
 
     /**
      * Increase the score for Team A by 1 point.

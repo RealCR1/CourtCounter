@@ -15,11 +15,7 @@ import android.widget.Toast;
  * Created by Administrator on 2017/5/24.
  */
 
-public class LoginActivity extends AppCompatActivity {
-
-    private SharedPreferences pref;
-
-    private SharedPreferences.Editor editor;
+public class LoginActivity extends BaseActivity {
 
     private EditText accountEdit;
 
@@ -27,26 +23,16 @@ public class LoginActivity extends AppCompatActivity {
 
     private Button login;
 
-    private CheckBox rememberPass;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
         accountEdit = (EditText) findViewById(R.id.account);
         passwordEdit = (EditText) findViewById(R.id.password);
-        rememberPass = (CheckBox) findViewById(R.id.remember_pass);
         login = (Button) findViewById(R.id.login);
-        boolean isRemember = pref.getBoolean("remember_password", false);
-        if (isRemember) {
-            // Try to save the account and password into the text
-            String account = pref.getString("account", "");
-            String password = pref.getString("password", "");
-            accountEdit.setText(account);
-            passwordEdit.setText(password);
-            rememberPass.setChecked(true);
-        }
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,15 +40,7 @@ public class LoginActivity extends AppCompatActivity {
                 String password = passwordEdit.getText().toString();
                 // If the account is Jonathan Wang and the password is 041500827,you will login in successfully.
                 if (account.equals("Jonathan Wang") && password.equals("041500827")) {
-                    editor = pref.edit();
-                    if (rememberPass.isChecked()) { // try to see whether checkBox is checked or not.
-                        editor.putBoolean("remember_password", true);
-                        editor.putString("account", account);
-                        editor.putString("password", password);
-                    } else {
-                        editor.clear();
-                    }
-                    editor.apply();
+
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     startActivity(intent);
                     finish();
